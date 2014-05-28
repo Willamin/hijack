@@ -18,35 +18,93 @@ public class Driver
 			System.out.println("Couldn't create robot");
 			System.exit(0);
 		}
-//		boolean b=true;
-//		//while(b)
-//		{
-//			try {
-//			    URL myURL = new URL("http://wflewis.com/pebble/javacheck.php");
-//			    URLConnection myURLConnection = myURL.openConnection();
-//			    myURLConnection.connect();
-//			    Scanner web = new Scanner(myURLConnection.getInputStream());
-//			    if (web.hasNextLine())
-//			    {
-//			    	String s= web.nextLine();
-//			    	System.out.println(s);
-//			    	if (s.equals("p"))
-//			    	{pauseItunes(r);returnBack(r);}
-//			    	
-//			    }
-//			} 
-//			catch (MalformedURLException e) { 
-//			    System.out.println("Can't find URL");
-//			} 
-//			catch (IOException e) {   
-//			    System.out.println("Broken Connection");
-//			}
-//		}
-		
-		
-		pauseItunes(r);
-		//r.delay(50);
-		returnBack(r);
+		if (!(args.length > 0))
+		{
+			System.out.println("No arguments!");
+			System.exit(0);
+		}
+		for(String s : args[0].split("(?<!\\\\);"))
+		{
+			parseString(s, r);
+		}
+	}
+	public static int escape(char c) 
+	{
+		switch (c)
+		{
+		case '#': //meta
+			return java.awt.event.KeyEvent.VK_META;
+		case 'r': //return
+			return java.awt.event.KeyEvent.VK_ENTER;
+		default: //others
+			return -1;
+		}
+	}
+	public static void parseString(String s, BetterR r)
+	{
+		System.out.println("command: "+s);
+		for(int i=0;i<s.length();i++)
+		{
+			if (s.charAt(i) == '\\')
+			{
+				if (i+1>=s.length())
+					break;
+				int key=escape(s.charAt(i+1));
+				if (key!=-1)
+				{
+					r.keyPress(key);
+					r.keyRelease(key);
+				}
+				else
+				{
+					r.type(String.valueOf((char)key));
+				}
+				i++;
+			}
+			if (s.charAt(i) == '{')
+			{
+				//check for a } before we do anything
+				boolean isthere=false;
+				int close=i;
+				for(int k=i;k<s.length();k++)
+				{
+					if (s.charAt(k)=='}')
+					{
+						isthere=true;
+						close=k;
+						break;
+					}
+				}
+				if (!isthere)
+				{
+					System.out.println("Invalid syntax: didn't close brace");
+					System.exit(0);
+				}
+				int c=0;
+				for(int k=i+1;k<close;k++)
+				{
+					if (s.charAt(k)=='\\')
+					{
+						c=escape(s.charAt(k+1));
+					}
+					else
+						c=s.charAt(k);
+					r.keyPress(c);
+				}
+				for(int k=i+1;k<close;k++)
+				{
+					if (s.charAt(k)=='\\')
+						c=escape(s.charAt(k+1));
+					else
+						c=s.charAt(k);
+					r.keyRelease(c);
+				}
+			}
+			else
+			{
+				r.type(String.valueOf(s.charAt(i)));
+			}
+		}
 	}
 	public static void pauseItunes(BetterR r)
 	{
