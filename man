@@ -1,0 +1,14 @@
+hijack man page
+separate commands using ;
+	(dunno why this is useful, just thought it might be)
+
+escape characters with a \
+
+special characters:
+\#	=> command key
+\r	=> return key
+
+combine keypresses with {}
+example:
+{\# }
+combines the command key and a space
