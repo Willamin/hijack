@@ -1,0 +1,11 @@
+Goal:
+Pebble
+ >Smartwatch HTTP requests
+  >Server webpage
+   >Set a value in [something] (mysql?)
+    >in java program, loop and check a webpage
+     >do a set of commands based on what value is returned
+      >reset the value in [something] (mysql?)
+
+next step:
+write the backend; maybe an arbitrary keyvalue pair such that the request is "host.com/request?k=alice&v=true" and the get is "host.com/get?k=alice" which returns "true"
