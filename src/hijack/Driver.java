@@ -45,6 +45,8 @@ public class Driver
 		System.out.println("command: "+s);
 		for(int i=0;i<s.length();i++)
 		{
+			r.delay(5);
+			System.out.println(i);
 			if (s.charAt(i) == '\\')
 			{
 				if (i+1>=s.length())
@@ -52,16 +54,18 @@ public class Driver
 				int key=escape(s.charAt(i+1));
 				if (key!=-1)
 				{
+					System.out.println("@"+key);
 					r.keyPress(key);
 					r.keyRelease(key);
 				}
 				else
 				{
+					System.out.println("@"+key);
 					r.type(String.valueOf((char)key));
 				}
-				i++;
+				i+=1;
 			}
-			if (s.charAt(i) == '{')
+			else if (s.charAt(i) == '{')
 			{
 				//check for a } before we do anything
 				boolean isthere=false;
@@ -85,23 +89,31 @@ public class Driver
 				{
 					if (s.charAt(k)=='\\')
 					{
-						c=escape(s.charAt(k+1));
+						c=escape(s.charAt((char)(k+1)));
+						k++;
 					}
 					else
 						c=s.charAt(k);
+					System.out.println("@v"+c);
 					r.keyPress(c);
 				}
 				for(int k=i+1;k<close;k++)
 				{
 					if (s.charAt(k)=='\\')
-						c=escape(s.charAt(k+1));
+					{
+						c=escape(s.charAt((char)(k+1)));
+						k++;
+					}
 					else
 						c=s.charAt(k);
+					System.out.println("@^"+c);
 					r.keyRelease(c);
 				}
+				i=close;
 			}
 			else
 			{
+				System.out.println("%"+s.charAt(i));
 				r.type(String.valueOf(s.charAt(i)));
 			}
 		}
